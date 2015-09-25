@@ -10,8 +10,8 @@ def hello_world():
 
 @app.route('/tala')
 def hello_world_tala():
-    print request.args['kala']
-    return 'Hello World!'
+    # print request.args['kala']
+    return requests.get('http://example.com').content
 
 if __name__ == '__main__':
     app.run()
