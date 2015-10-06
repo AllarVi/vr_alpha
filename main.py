@@ -1,15 +1,24 @@
-from flask import Flask, request
+from flask import Flask, request, render_template, url_for, jsonify
 import vra_resource
+import requests
 
 app = Flask(__name__)
 
 
-
 @app.route('/')
-def hello_world():
-    # TO-DO:
-    # UI for end-user inserting MD5 to crack.
-    return 'Hello World!'
+def index():
+    # For testing purposes right now.
+    return render_template('form_submit.html')
+
+@app.route("/resourcereply", methods=['POST'])
+def resourcereply():
+    # string=request.form['yourstring']
+
+    # return render_template('form_action.html', string=string)
+    return jsonify(ip= '55.66.77.88',
+                   port = '6788',
+                   id = 'asasasas',
+                   resource = '100')
 
 @app.route('/resource', methods=['GET', 'POST'])
 def resource():
@@ -19,11 +28,8 @@ def resource():
      ttl = request.values.get('ttl')
      id = request.values.get('id')
      noask = request.values.getlist('noask')
-     return vra_resource.resource_handler(sendip, sendport, ttl, id, noask)
 
-@app.route('/resourcereply')
-def resourcereply():
-    return 'Hello World!'
+     return vra_resource.resource_handler(sendip, sendport, ttl, id, noask)
 
 @app.route('/checkmd5')
 def checkmd5():
