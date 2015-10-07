@@ -1,13 +1,27 @@
 __author__ = 'Mart'
 
 from vra_io import load_hosts
-import urllib2
+import urllib2, urllib
 import socket
 from flask import request
+import json
 
 
 def resource_handler(sendip, sendport, ttl, id, noask):
     # Check if I am busy and respond accordingly
+    my_host = str(request.host)
+    my_host_separator_index = my_host.index(':')
+    my_ip = my_host[:my_host_separator_index]
+    my_port = my_host[my_host_separator_index + 1:]
+    jdata = json.dumps({"ip":my_ip, "port":my_port, "id":id, "resource":str(100)})
+    print("Jdata: " + str(jdata))
+    try:
+        urllib2.urlopen("http://" + str(my_ip) + ":" + str(my_port) + "/resourcereply", jdata, timeout=0.0000001)
+    except socket.error:
+        print "Socket timeout error as expected."
+    except urllib2.URLError as e:
+        print "URLError: " + str(e)
+
     response_url = "http://" + sendip + ":" + sendport + "/resourcereply" + "TODO:myData etc as POST data in JSON"
 
     #Forwarding request
@@ -17,8 +31,8 @@ def resource_handler(sendip, sendport, ttl, id, noask):
     else:
         return "TTL not a digit, will not forward this request."
 
-    # If TTL > 0, send it to known hosts not in noask list
-    if (ttl > 0):
+    # If TTL > 1, send it to known hosts not in noask list
+    if (ttl > 1):
         ttl -= 1
 
         # If sender is not in noask list, add it to noask list
@@ -28,15 +42,13 @@ def resource_handler(sendip, sendport, ttl, id, noask):
             noask.append(sender)
 
         # Add myself to noask:
-        my_host = str(request.host)
-        my_host_separator_index = my_host.index(':')
-        noask.append([my_host[:my_host_separator_index], my_host[my_host_separator_index + 1:]])
+        noask.append([my_ip, my_port])
 
         # Check noask list vs known hosts list and generate list of new unique hosts to forward request to
         known_hosts_from_file = load_hosts()
         will_ask = [x for x in known_hosts_from_file if x not in noask]
 
-        # Set up request url
+        # Set up request url parameters
         my_params = "/resource?sendip=" + str(sendip) + "&sendport=" + str(sendport) + "&ttl=" + str(ttl) + "&id=" + str(id)
         for host in noask:
             my_params += "&noask=" + str(host[0]) + "_" + str(host[1])
