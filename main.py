@@ -55,6 +55,5 @@ def readcmdport(argv):
 
 if __name__ == '__main__':
     my_port = readcmdport(sys.argv[1:])
-    print("My port:" + str(my_port))
     app.debug = True
     app.run(port=my_port)
