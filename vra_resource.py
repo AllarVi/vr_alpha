@@ -14,15 +14,12 @@ def resource_handler(sendip, sendport, ttl, id, noask):
     my_ip = my_host[:my_host_separator_index]
     my_port = my_host[my_host_separator_index + 1:]
     jdata = json.dumps({"ip":my_ip, "port":my_port, "id":id, "resource":str(100)})
-    print("Jdata: " + str(jdata))
     try:
-        urllib2.urlopen("http://" + str(my_ip) + ":" + str(my_port) + "/resourcereply", jdata, timeout=0.0000001)
+        urllib2.urlopen("http://" + str(sendip) + ":" + str(sendport) + "/resourcereply", jdata, timeout=0.0000001)
     except socket.error:
         print "Socket timeout error as expected."
     except urllib2.URLError as e:
         print "URLError: " + str(e)
-
-    response_url = "http://" + sendip + ":" + sendport + "/resourcereply" + "TODO:myData etc as POST data in JSON"
 
     #Forwarding request
     # Check if TTL is a digit
@@ -30,7 +27,6 @@ def resource_handler(sendip, sendport, ttl, id, noask):
         ttl = int(ttl)
     else:
         return "TTL not a digit, will not forward this request."
-
     # If TTL > 1, send it to known hosts not in noask list
     if (ttl > 1):
         ttl -= 1
@@ -61,7 +57,7 @@ def resource_handler(sendip, sendport, ttl, id, noask):
                 print "Socket timeout error as expected."
             except urllib2.URLError as e:
                 print "URLError: " + str(e)
-    return "Noask list:" + str(noask)
+    return str(0)
 
 def noask_string_to_list(noask):
     noask_list = []
