@@ -1,5 +1,6 @@
 from flask import Flask, request, render_template, url_for, jsonify
 import vra_resource
+import getopt, sys
 #import requests
 
 app = Flask(__name__)
@@ -40,6 +41,20 @@ def checkmd5():
 def answermd5():
     return 'Hello World!'
 
+def readcmdport(argv):
+    try:
+        opts, args = getopt.getopt(argv,"p:",["-port"])
+    except getopt.GetoptError:
+        return int(5000)
+    for opt, arg in opts:
+        if opt == '-p':
+            if arg.isdigit():
+                if int(arg) < 65535 and int(arg) > 0:
+                    return int(arg)
+    return int(5000)
+
 if __name__ == '__main__':
+    my_port = readcmdport(sys.argv[1:])
+    print("My port:" + str(my_port))
     app.debug = True
-    app.run()
+    app.run(port=my_port)
