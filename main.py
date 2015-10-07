@@ -1,6 +1,6 @@
 from flask import Flask, request, render_template, url_for, jsonify
 import vra_resource
-import requests
+#import requests
 
 app = Flask(__name__)
 
