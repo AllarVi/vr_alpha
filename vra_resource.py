@@ -1,7 +1,7 @@
 __author__ = 'Mart'
 
 from vra_io import load_hosts
-import urllib2, urllib
+import urllib2
 import socket
 from flask import request
 import json
@@ -58,6 +58,7 @@ def resource_handler(sendip, sendport, ttl, id, noask):
             except urllib2.URLError as e:
                 print "URLError: " + str(e)
     return str(0)
+
 
 def noask_string_to_list(noask):
     noask_list = []

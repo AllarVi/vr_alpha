@@ -11,6 +11,7 @@ def index():
     # For testing purposes right now.
     return render_template('form_submit.html')
 
+
 @app.route("/resourcereply", methods=['POST'])
 def resourcereply():
     # This is to test the data that we got
@@ -23,6 +24,7 @@ def resourcereply():
                    id = 'asasasas',
                    resource = '100')
 
+
 @app.route('/resource', methods=['GET'])
 def resource():
      # Read values from request.
@@ -33,13 +35,16 @@ def resource():
      noask = request.values.getlist('noask')
      return vra_resource.resource_handler(sendip, sendport, ttl, id, noask)
 
+
 @app.route('/checkmd5')
 def checkmd5():
     return 'Hello World!'
 
+
 @app.route('/answermd5')
 def answermd5():
     return 'Hello World!'
+
 
 def readcmdport(argv):
     try:
@@ -52,6 +57,7 @@ def readcmdport(argv):
                 if int(arg) < 65535 and int(arg) > 0:
                     return int(arg)
     return int(5000)
+
 
 if __name__ == '__main__':
     my_port = readcmdport(sys.argv[1:])
