@@ -15,7 +15,9 @@ def resource_handler(sendip, sendport, ttl, id, noask):
     my_port = my_host[my_host_separator_index + 1:]
     jdata = json.dumps({"ip":my_ip, "port":my_port, "id":id, "resource":str(100)})
     try:
-        urllib2.urlopen("http://" + str(sendip) + ":" + str(sendport) + "/resourcereply", jdata, timeout=0.0000001)
+        encodedSendIp = sendip.encode('ascii','ignore')
+        encodedSendPort = sendport.encode('ascii','ignore')
+        urllib2.urlopen("http://" + encodedSendIp + ":" + encodedSendPort + "/resourcereply", jdata, timeout=0.0000001)
     except socket.error:
         print "Socket timeout error as expected."
     except urllib2.URLError as e:

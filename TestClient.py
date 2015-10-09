@@ -61,13 +61,13 @@ def readcmdport(argv):
     try:
         opts, args = getopt.getopt(argv,"p:",["-port"])
     except getopt.GetoptError:
-        return int(5000)
+        return int(5001)
     for opt, arg in opts:
         if opt == '-p':
             if arg.isdigit():
                 if int(arg) < 65535 and int(arg) > 0:
                     return int(arg)
-    return int(5000)
+    return int(5001)
 
 
 if __name__ == '__main__':
