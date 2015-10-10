@@ -2,6 +2,7 @@
 import json
 import socket
 from flask import Flask, request, render_template
+from vra_md5 import md5_crack
 import vra_resource
 import getopt, sys
 import requests
@@ -97,6 +98,14 @@ def resource():
 def checkmd5():
     bruteforceData = json.loads(str(request.get_data()))
 
+    # tocrack="68e1c85222192b83c04c0bae564b493d" # hash of koer
+    print('md5 cracker starting...')
+    tocrack= str(bruteforceData['md5'])
+    res=md5_crack(tocrack,"r???at")
+    if res:
+        print("cracking "+tocrack+" gave "+res)
+    else:
+        print("failed to crack "+tocrack)
     return 'success'
 
 
