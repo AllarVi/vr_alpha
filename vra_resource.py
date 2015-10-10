@@ -12,8 +12,8 @@ import vra_http_request_helper
 
 def resource_handler(sendip, sendport, ttl, id, noask):
     # Check if I am busy and respond accordingly
-    my_ip = vra_http_request_helper.get_host_ip()
-    my_port = vra_http_request_helper.get_host_port()
+    my_ip = vra_http_request_helper.get_my_ip()
+    my_port = vra_http_request_helper.get_my_port()
     jdata = json.dumps({"ip":my_ip, "port":my_port, "id":id, "resource":str(100)})
     vra_http_request_helper.send_post_request(sendip, sendport, jdata)
 
