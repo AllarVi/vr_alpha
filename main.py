@@ -6,15 +6,22 @@ import vra_resource
 import getopt, sys
 import requests
 import uuid
+import urllib
+import urllib2
 
 app = Flask(__name__)
 
 potentialWorkers = {}
 
+md5 = ''
+
 @app.route('/index', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
         if request.form['submit'] == 'sendResourceRequests':
+            global md5
+            md5 = request.form['md5']
+
             # generate random ID for client
             uid = str(uuid.uuid1())
 
@@ -50,8 +57,27 @@ def resourcereply():
     my_port = my_host[my_host_separator_index + 1:]
     # Worker data
     workerId = str(workerData['id'])
+    md5ToCrack = str(md5)
 
-    # string=request.form['yourstring']
+    jdata = json.dumps({"ip":my_ip,
+                        "port":my_port,
+                        "id":workerId,
+                        "md5":md5ToCrack,
+                        "ranges":"hereWillBeRanges",
+                        "wildcard":"hereWillBeWildcard",
+                        "symbolrange":"hereWillBeSymbolRange"
+                        })
+
+    # Send md5 to worker
+    try:
+        workerIp = str(workerData['ip'])
+        workerPort = str(workerData['port'])
+        urllib2.urlopen("http://" + workerIp + ":" + workerPort + "/checkmd5", jdata, timeout=0.0000001)
+    except socket.error:
+        print "Socket timeout error as expected."
+    except urllib2.URLError as e:
+        print "URLError: " + str(e)
+
     return 'success'
 
 
@@ -67,9 +93,11 @@ def resource():
 
     return vra_resource.resource_handler(sendip, sendport, ttl, id, noask)
 
-@app.route('/checkmd5')
+@app.route('/checkmd5', methods=['POST'])
 def checkmd5():
-    return 'Hello World!'
+    bruteforceData = json.loads(str(request.get_data()))
+
+    return 'success'
 
 
 @app.route('/answermd5')

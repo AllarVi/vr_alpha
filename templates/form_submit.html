@@ -29,13 +29,10 @@
         <h1>POST request with Flask</h1>
 
         <div>
-            <form method="post" action="{{ url_for('resourcereply') }}">
-                <label>Please enter your string:</label>
-                <input type="text" name="yourstring"/><br/>
-                <input type="submit" class="btn btn-lg btn-default"/>
-            </form>
             <form method="post" action="{{ url_for('index') }}">
-            <input type="submit" name="submit" value="sendResourceRequests" class="btn btn-lg btn-default">
+            <label>Please enter your md5:</label>
+                <input type="text" name="md5"/><br/>
+                <input type="submit" name="submit" value="sendResourceRequests" class="btn btn-lg btn-default">
             </form>
         </div>
     </div>
