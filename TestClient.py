@@ -37,13 +37,21 @@ def index():
 @app.route("/resourcereply", methods=['POST'])
 def resourcereply():
     global potentialWorkers
-    # This is to test the data that we got
-    print("Data input to /resourcereply: " + str(request.get_data()))
 
-    # potentialWorkerData = json.loads(request.get_data())
+    workerData = json.loads(str(request.get_data()))
+
+    # Here we will save workers for potential future use, currently not yet implemented
+    potentialWorkers[workerData['id']] = workerData
+
+    # Request sender data
+    my_host = str(request.host)
+    my_host_separator_index = my_host.index(':')
+    my_ip = my_host[:my_host_separator_index]
+    my_port = my_host[my_host_separator_index + 1:]
+    # Worker data
+    workerId = str(workerData['id'])
 
     # string=request.form['yourstring']
-    # return render_template('form_action.html', string=string)
     return 'success'
 
 
