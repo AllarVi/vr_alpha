@@ -28,4 +28,5 @@ def send_answermd5(masterData, res):
     sendip = masterData['ip']
     sendport = masterData['port']
 
-    vra_http_request_helper.send_post_request(sendip, sendport, jdata)
+    print('Sending /answermd5 back to master')
+    vra_http_request_helper.send_post_request(sendip, sendport, jdata, "/answermd5")
