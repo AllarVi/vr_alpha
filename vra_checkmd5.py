@@ -2,16 +2,15 @@
 import json
 import socket
 import urllib2
+import vra_http_request_helper
 
 __author__ = 'allar'
 
 from flask import request
 
 def send_answermd5(masterData, res):
-    my_host = str(request.host)
-    my_host_separator_index = my_host.index(':')
-    my_ip = my_host[:my_host_separator_index]
-    my_port = my_host[my_host_separator_index + 1:]
+    my_ip = vra_http_request_helper.get_my_ip()
+    my_port = vra_http_request_helper.get_my_port()
 
     requestId = masterData['id']
     md5 = masterData['md5']
@@ -25,6 +24,11 @@ def send_answermd5(masterData, res):
                         "result":result,
                         "resultstring":resultstring
                         })
+
+    sendip = masterData['ip']
+    sendport = masterData['port']
+
+    vra_http_request_helper.send_post_request(sendip, sendport, jdata)
 
     try:
         encodedSendIp = str(masterData['ip'])
