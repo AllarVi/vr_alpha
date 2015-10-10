@@ -7,23 +7,15 @@ from flask import request
 import json
 from threading import Thread, enumerate
 import threading
+import vra_http_request_helper
 
 
 def resource_handler(sendip, sendport, ttl, id, noask):
     # Check if I am busy and respond accordingly
-    my_host = str(request.host)
-    my_host_separator_index = my_host.index(':')
-    my_ip = my_host[:my_host_separator_index]
-    my_port = my_host[my_host_separator_index + 1:]
+    my_ip = vra_http_request_helper.get_host_ip()
+    my_port = vra_http_request_helper.get_host_port()
     jdata = json.dumps({"ip":my_ip, "port":my_port, "id":id, "resource":str(100)})
-    try:
-        encodedSendIp = sendip.encode('ascii','ignore')
-        encodedSendPort = sendport.encode('ascii','ignore')
-        urllib2.urlopen("http://" + encodedSendIp + ":" + encodedSendPort + "/resourcereply", jdata, timeout=0.0000001)
-    except socket.error:
-        print "Socket timeout error as expected."
-    except urllib2.URLError as e:
-        print "URLError: " + str(e)
+    vra_http_request_helper.send_post_request(sendip, sendport, jdata)
 
     #Forwarding request
     # Check if TTL is a digit
@@ -46,6 +38,7 @@ def resource_handler(sendip, sendport, ttl, id, noask):
 
         # Check noask list vs known hosts list and generate list of new unique hosts to forward request to
         known_hosts_from_file = load_hosts()
+        print("Known hosts: " + str(known_hosts_from_file))
         will_ask = [x for x in known_hosts_from_file if x not in noask]
 
         # Set up request url parameters
@@ -55,12 +48,9 @@ def resource_handler(sendip, sendport, ttl, id, noask):
 
         # Send requests to each unique host
         for host in will_ask:
-            try:
-                urllib2.urlopen("http://" + str(host[0]) + ":" + str(host[1]) + my_params, timeout=0.0000001)
-            except socket.error:
-                print "Socket timeout error as expected."
-            except urllib2.URLError as e:
-                print "URLError: " + str(e)
+            host_ip = str(host[0])
+            host_port = str(host[1])
+            vra_http_request_helper.send_get_request(host_ip, host_port, my_params)
     return str(0)
 
 

@@ -8,5 +8,5 @@ def load_hosts():
     root_dir = os.path.abspath(os.path.dirname(__file__))
 
     # Open machines.txt and read it
-    with open(os.path.join(root_dir, 'machines.txt')) as hosts_file:
+    with open(os.path.join(root_dir, 'Resources', 'machines.txt')) as hosts_file:
          return json.load(hosts_file)
