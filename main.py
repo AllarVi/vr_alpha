@@ -11,6 +11,8 @@ import uuid
 import urllib
 import urllib2
 import read_machines
+import vra_http_request_helper
+import vra_io
 
 app = Flask(__name__)
 
@@ -26,29 +28,18 @@ def index():
             md5 = request.form['md5']
 
             # read known machines
-            machines = read_machines.readMachines("machines.txt")
-            for machine in machines:
+            known_hosts = vra_io.load_hosts()
+            for host in known_hosts:
                 # generate random ID for client
                 uid = str(uuid.uuid1())
 
-                my_host = str(request.host)
-                my_host_separator_index = my_host.index(':')
-                my_ip = my_host[:my_host_separator_index]
-                my_port = my_host[my_host_separator_index + 1:]
+                my_ip = vra_http_request_helper.get_host_ip()
+                my_port = vra_http_request_helper.get_host_port()
 
-                machine_ip = machine[0].strip('"')
-                machine_port = machine[1].strip('"')
-
-                try:
-                    requests.get('http://' + machine_ip + ':' + machine_port +'/resource?sendip=' + my_ip + '&sendport=' + my_port + '&ttl=10&id=' + uid, timeout=0.001)
-                except requests.exceptions.ConnectTimeout as e:
-                    print "Too slow Mojo!"
-                except requests.exceptions.ConnectionError as e:
-                    print "These aren't the domains we're looking for."
-                except requests.exceptions.ReadTimeout as e:
-                    print "Waited too long between bytes."
-                except socket.error:
-                    print "Socket timeout error as expected."
+                host_ip = str(host[0])
+                host_port = str(host[1])
+                my_params = '/resource?sendip=' + my_ip + '&sendport=' + my_port + '&ttl=10&id=' + uid
+                vra_http_request_helper.send_get_request(host_ip, host_port, my_params)
 
             return render_template('form_submit.html')
 
