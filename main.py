@@ -2,6 +2,7 @@
 import json
 import socket
 from flask import Flask, request, render_template
+import vra_checkmd5
 from vra_md5 import md5_crack
 import vra_resource
 import getopt, sys
@@ -96,22 +97,28 @@ def resource():
 
 @app.route('/checkmd5', methods=['POST'])
 def checkmd5():
-    bruteforceData = json.loads(str(request.get_data()))
+    masterData = json.loads(str(request.get_data()))
 
     # tocrack="68e1c85222192b83c04c0bae564b493d" # hash of koer
     print('md5 cracker starting...')
-    tocrack= str(bruteforceData['md5'])
+    tocrack= str(masterData['md5'])
     res=md5_crack(tocrack,"r???at")
     if res:
         print("cracking "+tocrack+" gave "+res)
     else:
         print("failed to crack "+tocrack)
+
+    vra_checkmd5.send_answermd5(masterData, res)
+
     return 'success'
 
 
-@app.route('/answermd5')
+@app.route('/answermd5', methods=['POST'])
 def answermd5():
-    return 'Hello World!'
+    answerData = json.loads(str(request.get_data()))
+
+    result = str(answerData['resultstring'])
+    return render_template('form_submit.html', result=result)
 
 
 def readcmdport(argv):
