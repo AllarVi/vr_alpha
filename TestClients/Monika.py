@@ -6,8 +6,6 @@ import vra_resource
 import getopt, sys
 import requests
 import uuid
-import urllib
-import urllib2
 import read_machines
 
 app = Flask(__name__)
@@ -22,7 +20,6 @@ def index():
         if request.form['submit'] == 'sendResourceRequests':
             global md5
             md5 = request.form['md5']
-
             # read known machines
             machines = read_machines.readMachines("machines.txt")
             for machine in machines:
@@ -69,33 +66,14 @@ def resourcereply():
     my_port = my_host[my_host_separator_index + 1:]
     # Worker data
     workerId = str(workerData['id'])
-    md5ToCrack = str(md5)
 
-    jdata = json.dumps({"ip":my_ip,
-                        "port":my_port,
-                        "id":workerId,
-                        "md5":md5ToCrack,
-                        "ranges":"hereWillBeRanges",
-                        "wildcard":"hereWillBeWildcard",
-                        "symbolrange":"hereWillBeSymbolRange"
-                        })
-
-    # Send md5 to worker
-    try:
-        workerIp = str(workerData['ip'])
-        workerPort = str(workerData['port'])
-        urllib2.urlopen("http://" + workerIp + ":" + workerPort + "/checkmd5", jdata, timeout=0.0000001)
-    except socket.error:
-        print "Socket timeout error as expected."
-    except urllib2.URLError as e:
-        print "URLError: " + str(e)
-
+    # string=request.form['yourstring']
     return 'success'
 
 
 @app.route('/resource', methods=['GET'])
 def resource():
-    print('/resource AT Client reached...')
+    print('/resource AT Monika reached...')
     # Read values from request. Supports both GET and POST, whichever is sent.
     sendip = request.values.get('sendip')
     sendport = request.values.get('sendport')
@@ -105,11 +83,9 @@ def resource():
 
     return vra_resource.resource_handler(sendip, sendport, ttl, id, noask)
 
-@app.route('/checkmd5', methods=['POST'])
+@app.route('/checkmd5')
 def checkmd5():
-    bruteforceData = json.loads(str(request.get_data()))
-
-    return 'success'
+    return 'Hello World!'
 
 
 @app.route('/answermd5')
@@ -121,13 +97,13 @@ def readcmdport(argv):
     try:
         opts, args = getopt.getopt(argv,"p:",["-port"])
     except getopt.GetoptError:
-        return int(5000)
+        return int(5002)
     for opt, arg in opts:
         if opt == '-p':
             if arg.isdigit():
                 if int(arg) < 65535 and int(arg) > 0:
                     return int(arg)
-    return int(5000)
+    return int(5002)
 
 
 if __name__ == '__main__':

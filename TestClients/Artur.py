@@ -2,6 +2,7 @@
 import json
 import socket
 from flask import Flask, request, render_template
+import read_machines
 import vra_resource
 import getopt, sys
 import requests
@@ -21,19 +22,30 @@ def index():
         if request.form['submit'] == 'sendResourceRequests':
             global md5
             md5 = request.form['md5']
-            # generate random ID for client
-            uid = str(uuid.uuid1())
+            # read known machines
+            machines = read_machines.readMachines("machines.txt")
+            for machine in machines:
+                # generate random ID for client
+                uid = str(uuid.uuid1())
 
-            try:
-                requests.get('http://127.0.0.1:5001/resource?sendip=127.0.0.1&sendport=5000&ttl=10&id=' + uid, timeout=0.001)
-            except requests.exceptions.ConnectTimeout as e:
-                print "Too slow Mojo!"
-            except requests.exceptions.ConnectionError as e:
-                print "These aren't the domains we're looking for."
-            except requests.exceptions.ReadTimeout as e:
-                print "Waited too long between bytes."
-            except socket.error:
-                print "Socket timeout error as expected."
+                my_host = str(request.host)
+                my_host_separator_index = my_host.index(':')
+                my_ip = my_host[:my_host_separator_index]
+                my_port = my_host[my_host_separator_index + 1:]
+
+                machine_ip = machine[0].strip('"')
+                machine_port = machine[1].strip('"')
+
+                try:
+                    requests.get('http://' + machine_ip + ':' + machine_port +'/resource?sendip=' + my_ip + '&sendport=' + my_port + '&ttl=10&id=' + uid, timeout=0.001)
+                except requests.exceptions.ConnectTimeout as e:
+                    print "Too slow Mojo!"
+                except requests.exceptions.ConnectionError as e:
+                    print "These aren't the domains we're looking for."
+                except requests.exceptions.ReadTimeout as e:
+                    print "Waited too long between bytes."
+                except socket.error:
+                    print "Socket timeout error as expected."
 
             return render_template('form_submit.html')
 
@@ -82,7 +94,7 @@ def resourcereply():
 
 @app.route('/resource', methods=['GET'])
 def resource():
-    print('/resource AT Client reached...')
+    print('/resource AT Artur reached...')
     # Read values from request. Supports both GET and POST, whichever is sent.
     sendip = request.values.get('sendip')
     sendport = request.values.get('sendport')
