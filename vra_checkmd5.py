@@ -29,14 +29,3 @@ def send_answermd5(masterData, res):
     sendport = masterData['port']
 
     vra_http_request_helper.send_post_request(sendip, sendport, jdata)
-
-    try:
-        encodedSendIp = str(masterData['ip'])
-        encodedSendPort = str(masterData['port'])
-        urllib2.urlopen("http://" + encodedSendIp + ":" + encodedSendPort + "/answermd5", jdata, timeout=0.0000001)
-    except socket.error:
-        print "Socket timeout error as expected."
-    except urllib2.URLError as e:
-        print "URLError: " + str(e)
-
-    pass
