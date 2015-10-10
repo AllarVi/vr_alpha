@@ -1,19 +1,18 @@
 # coding=utf-8
 import json
 import socket
+import getopt
+import sys
+import uuid
+import urllib2
+
 from flask import Flask, request, render_template
+import requests
 
 import read_machines
-
 import vra_checkmd5
-from vra_md5 import md5_crack
-
+from md5.vra_md5 import md5_crack
 import vra_resource
-import getopt, sys
-import requests
-import uuid
-import urllib
-import urllib2
 
 app = Flask(__name__)
 

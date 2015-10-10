@@ -28,12 +28,12 @@ def send_post_request(sendip, sendport, jdata):
         print "URLError: " + str(e)
 
 
-def get_host_ip():
+def get_my_ip():
     my_host = str(request.host)
     my_host_separator_index = my_host.index(':')
     return my_host[:my_host_separator_index]
 
-def get_host_port():
+def get_my_port():
     my_host = str(request.host)
     my_host_separator_index = my_host.index(':')
     return my_host[my_host_separator_index + 1:]

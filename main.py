@@ -1,16 +1,16 @@
 # coding=utf-8
 import json
 import socket
-from flask import Flask, request, render_template
-import vra_checkmd5
-from vra_md5 import md5_crack
-import vra_resource
-import getopt, sys
-import requests
+import getopt
+import sys
 import uuid
-import urllib
 import urllib2
-import read_machines
+
+from flask import Flask, request, render_template
+
+import vra_checkmd5
+from md5.vra_md5 import md5_crack
+import vra_resource
 import vra_http_request_helper
 import vra_io
 
@@ -33,8 +33,8 @@ def index():
                 # generate random ID for client
                 uid = str(uuid.uuid1())
 
-                my_ip = vra_http_request_helper.get_host_ip()
-                my_port = vra_http_request_helper.get_host_port()
+                my_ip = vra_http_request_helper.get_my_ip()
+                my_port = vra_http_request_helper.get_my_port()
 
                 host_ip = str(host[0])
                 host_port = str(host[1])
@@ -58,8 +58,8 @@ def resourcereply():
     # Request sender data
     my_host = str(request.host)
     my_host_separator_index = my_host.index(':')
-    my_ip = my_host[:my_host_separator_index]
-    my_port = my_host[my_host_separator_index + 1:]
+    my_ip = vra_http_request_helper.get_my_ip()
+    my_port = vra_http_request_helper.get_my_port()
     # Worker data
     workerId = str(workerData['id'])
     md5ToCrack = str(md5)
@@ -105,13 +105,14 @@ def checkmd5():
     # tocrack="68e1c85222192b83c04c0bae564b493d" # hash of koer
     print('md5 cracker starting...')
     tocrack= str(masterData['md5'])
-    res=md5_crack(tocrack,"r???at")
+    res=md5_crack(tocrack,"???")
     if res:
         print("cracking "+tocrack+" gave "+res)
     else:
         print("failed to crack "+tocrack)
 
     vra_checkmd5.send_answermd5(masterData, res)
+    print("Result: " + str(res))
 
     return 'success'
 
