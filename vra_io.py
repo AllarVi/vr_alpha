@@ -9,4 +9,4 @@ def load_hosts():
 
     # Open machines.txt and read it
     with open(os.path.join(root_dir, 'Resources', 'machines.txt')) as hosts_file:
-         return json.load(hosts_file)
+        return json.load(hosts_file)

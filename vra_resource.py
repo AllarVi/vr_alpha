@@ -1,14 +1,8 @@
 __author__ = 'Mart'
 
-from vra_io import load_hosts
-import urllib2
-import socket
-from flask import request
 import json
-from threading import Thread, enumerate
-import threading
 import vra_http_request_helper
-
+import vra_io
 
 def resource_handler(sendip, sendport, ttl, id, noask):
     # Check if I am busy and respond accordingly
@@ -37,7 +31,7 @@ def resource_handler(sendip, sendport, ttl, id, noask):
         noask.append([my_ip, my_port])
 
         # Check noask list vs known hosts list and generate list of new unique hosts to forward request to
-        known_hosts_from_file = load_hosts()
+        known_hosts_from_file = vra_io.load_hosts()
         print("Known hosts: " + str(known_hosts_from_file))
         will_ask = [x for x in known_hosts_from_file if x not in noask]
 
