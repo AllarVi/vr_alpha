@@ -4,11 +4,16 @@ import json
 import vra_http_request_helper
 import vra_io
 
-def resource_handler(sendip, sendport, ttl, id, noask):
+def resource_handler(sendip, sendport, ttl, id, noask, is_busy):
     # Check if I am busy and respond accordingly
     my_ip = vra_http_request_helper.get_my_ip()
     my_port = vra_http_request_helper.get_my_port()
-    jdata = json.dumps({"ip":my_ip, "port":my_port, "id":id, "resource":str(100)})
+
+    resource = str(100)
+    if (is_busy):
+        resource = str(0)
+
+    jdata = json.dumps({"ip":my_ip, "port":my_port, "id":id, "resource":resource})
     vra_http_request_helper.send_post_request(sendip, sendport, jdata, "/resourcereply")
 
     #Forwarding request
@@ -41,6 +46,7 @@ def resource_handler(sendip, sendport, ttl, id, noask):
             my_params += "&noask=" + str(host[0]) + "_" + str(host[1])
 
         # Send requests to each unique host
+        print('/resource: hosts in will_ask: ' + str(will_ask))
         for host in will_ask:
             host_ip = str(host[0])
             host_port = str(host[1])

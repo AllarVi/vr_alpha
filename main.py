@@ -1,18 +1,13 @@
 # coding=utf-8
 import json
-import socket
 import getopt
 import sys
-import uuid
-import urllib2
 
 from flask import Flask, request, render_template, jsonify
 
 import vra_checkmd5
 from md5.vra_md5 import md5_crack
 import vra_resource
-import vra_http_request_helper
-import vra_io
 import vra_resourcereply
 import vra_index
 
@@ -23,6 +18,8 @@ potentialWorkers = {}
 md5 = ''
 
 recievedAnswers = []
+
+is_busy = False
 
 @app.route('/index', methods=['GET', 'POST'])
 def index():
@@ -45,7 +42,11 @@ def resourcereply():
     # Here we will save workers for potential future use, currently not yet implemented
     potentialWorkers[workerData['id']] = workerData
 
-    vra_resourcereply.send_checkmd5(workerData, md5)
+    print('/resourcereply: My worker has ' + workerData['resource'] + ' resources')
+    if (workerData['resource'] == str(100)):
+        vra_resourcereply.send_checkmd5(workerData, md5)
+    else:
+        print('/resourcereply: My worker is currently busy')
 
     return 'success'
 
@@ -60,10 +61,13 @@ def resource():
     id = request.values.get('id')
     noask = request.values.getlist('noask')
 
-    return vra_resource.resource_handler(sendip, sendport, ttl, id, noask)
+    return vra_resource.resource_handler(sendip, sendport, ttl, id, noask, is_busy)
 
 @app.route('/checkmd5', methods=['POST'])
 def checkmd5():
+    global is_busy
+    is_busy = True
+
     masterData = json.loads(str(request.get_data()))
 
     # tocrack="68e1c85222192b83c04c0bae564b493d" # hash of koer
@@ -74,6 +78,8 @@ def checkmd5():
         print("cracking "+tocrack+" gave "+res)
     else:
         print("failed to crack "+tocrack)
+
+    is_busy = False
 
     vra_checkmd5.send_answermd5(masterData, res)
     print("Result: " + str(res))
