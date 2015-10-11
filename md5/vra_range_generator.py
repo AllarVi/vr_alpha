@@ -10,6 +10,8 @@ def get_range(index, wildcard):
     wildcard_string = str(wildcard)
     wildcard_ascii_index = ord(wildcard)
     number_of_chars = END_CHAR_ASCII_CODE - START_CHAR_ASCII_CODE + 1
+    if START_CHAR_ASCII_CODE <= wildcard_ascii_index <= END_CHAR_ASCII_CODE:
+        number_of_chars -= 1
 
     # ? and ??
     if index is 0:
@@ -18,27 +20,27 @@ def get_range(index, wildcard):
         return [range1, range2]
     # a??, b??, c?? and d?? and so on.
     elif index <= number_of_chars:
-        return [get_char(int(START_CHAR_ASCII_CODE + (index - 1))) + wildcard_string + wildcard_string]
+        return [get_char(int(START_CHAR_ASCII_CODE + (index - 1)), wildcard_ascii_index) + wildcard_string + wildcard_string]
     # aa??, ab??, ac??, ad??, ...
     # Must iterate elemnr*elemnr times to cover all,
     # but we have already covered number_of_chars times, so add this.
     elif index <= (number_of_chars**2 + number_of_chars):
         operator = index - number_of_chars - 1
-        return [get_char(START_CHAR_ASCII_CODE + int(operator / number_of_chars))
-               + get_char(START_CHAR_ASCII_CODE + operator % number_of_chars) + wildcard_string + wildcard_string]
+        return [get_char(START_CHAR_ASCII_CODE + int(operator / number_of_chars), wildcard_ascii_index)
+               + get_char(START_CHAR_ASCII_CODE + operator % number_of_chars ,wildcard_ascii_index) + wildcard_string + wildcard_string]
     # aaa??, aab??, aac??, ...
     elif index <= (number_of_chars**3 + (number_of_chars**2 + number_of_chars)):
         operator = index - (number_of_chars**2 + number_of_chars) - 1
-        return [get_char(START_CHAR_ASCII_CODE + int(operator / number_of_chars**2)) +
-                get_char(START_CHAR_ASCII_CODE + int(operator / number_of_chars) % number_of_chars) +
-                get_char(START_CHAR_ASCII_CODE + operator % (number_of_chars)) +
+        return [get_char(START_CHAR_ASCII_CODE + int(operator / number_of_chars**2), wildcard_ascii_index) +
+                get_char(START_CHAR_ASCII_CODE + int(operator / number_of_chars) % number_of_chars, wildcard_ascii_index) +
+                get_char(START_CHAR_ASCII_CODE + operator % (number_of_chars), wildcard_ascii_index) +
                 wildcard_string + wildcard_string]
     # aaa???, aab???, aac???, aad???, ...
     elif index <= number_of_chars**3 + (number_of_chars**3 + (number_of_chars**2 + number_of_chars)):
         operator = index - (number_of_chars**2 + number_of_chars) - 1
-        return [get_char(START_CHAR_ASCII_CODE + int(operator / number_of_chars**2) % number_of_chars) +
-                get_char(START_CHAR_ASCII_CODE + int(operator / number_of_chars) % number_of_chars) +
-                get_char(START_CHAR_ASCII_CODE + operator % (number_of_chars)) +
+        return [get_char(START_CHAR_ASCII_CODE + int(operator / number_of_chars**2) % number_of_chars, wildcard_ascii_index) +
+                get_char(START_CHAR_ASCII_CODE + int(operator / number_of_chars) % number_of_chars, wildcard_ascii_index) +
+                get_char(START_CHAR_ASCII_CODE + operator % (number_of_chars), wildcard_ascii_index) +
                 wildcard_string + wildcard_string + wildcard_string]
     return []
 
@@ -60,7 +62,9 @@ def get_char(char_ascii_code, wildcard_ascii_code):
         return chr(char_ascii_code + 1)
     else:
         # workaround for char_ascii_code == END_CHAR_ASCII_CODE + 1, at least makes sure that no wildcard is inserted.
-        if wildcard_ascii_code is ord("a"):
-            return "b"
-        else:
+        # Actual code should never enter here.
+        print("Error: OUT_OF_RANGE vra_range_generator.get_char()")
+        if wildcard_ascii_code is not ord("a"):
             return "a"
+        else:
+            return "b"
