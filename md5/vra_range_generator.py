@@ -1,7 +1,7 @@
 __author__ = 'Mart'
 
-START_CHAR_ASCII_CODE = 32
-END_CHAR_ASCII_CODE = 126
+START_CHAR_ASCII_CODE = 65
+END_CHAR_ASCII_CODE = 68
 
 
 def get_range(index, wildcard):
@@ -30,11 +30,7 @@ def get_range(index, wildcard):
                 wildcard_string + wildcard_string + wildcard_string]
     # aaa???, aab???, aac???, ...
     elif index <= (number_of_chars**3 + (number_of_chars**2 + number_of_chars)):
-        operator = index - (number_of_chars**2 + number_of_chars) - 1
-        return [get_char(START_CHAR_ASCII_CODE + int(operator / number_of_chars**2), wildcard_ascii_index) +
-                get_char(START_CHAR_ASCII_CODE + int(operator / number_of_chars) % number_of_chars, wildcard_ascii_index) +
-                get_char(START_CHAR_ASCII_CODE + operator % (number_of_chars), wildcard_ascii_index) +
-                wildcard_string + wildcard_string + wildcard_string]
+        indexer = 0
     # aaa????, aab????, aac????, aad????, ...
     elif index <= number_of_chars**3 + (number_of_chars**3 + (number_of_chars**2 + number_of_chars)):
         indexer = 1
