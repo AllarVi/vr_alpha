@@ -6,7 +6,7 @@ import sys
 import uuid
 import urllib2
 
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template, jsonify
 
 import vra_checkmd5
 from md5.vra_md5 import md5_crack
@@ -22,6 +22,8 @@ potentialWorkers = {}
 
 md5 = ''
 
+recievedAnswers = []
+
 @app.route('/index', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
@@ -31,9 +33,8 @@ def index():
             vra_index.md5_crack_request_handler(md5)
 
             return render_template('form_submit.html')
-
-    return render_template('form_submit.html')
-
+    if request.method == 'GET':
+        return render_template('form_submit.html')
 
 @app.route("/resourcereply", methods=['POST'])
 def resourcereply():
@@ -80,15 +81,21 @@ def checkmd5():
     return 'success'
 
 
-@app.route('/answermd5', methods=['POST'])
+@app.route('/answermd5', methods=['GET', 'POST'])
 def answermd5():
     print('/answermd5 reached...')
-    answerData = json.loads(str(request.get_data()))
+    if request.method == 'POST':
+        global recievedAnswers
 
-    result = str(answerData['resultstring'])
+        answerData = json.loads(str(request.get_data()))
+        answer = str(answerData['resultstring'])
+        worker_ip_and_port = str(answerData['ip']) + ":" + str(answerData['port'])
 
-    print ('Answer:' + result)
-    return render_template('form_submit.html', result=result)
+        recievedAnswers.append((answer, worker_ip_and_port))
+        print ('Answer:' + answer)
+
+    if request.method == 'GET':
+        return jsonify(resultstring=recievedAnswers)
 
 
 def readcmdport(argv):

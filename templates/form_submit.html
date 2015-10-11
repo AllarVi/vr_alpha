@@ -21,6 +21,12 @@
     <script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/js/bootstrap.min.js"></script>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/modernizr/2.8.3/modernizr.js"></script>
+
+    <script type=text/javascript>
+        $SCRIPT_ROOT = {{ request.script_root|tojson|safe }};
+    </script>
+
+    <script type="text/javascript" src="{{ url_for('static', filename='scripts.js') }}"></script>
 </head>
 <body>
 
@@ -35,10 +41,13 @@
                 <input type="submit" name="submit" value="sendResourceRequests" class="btn btn-lg btn-default">
             </form>
         </div>
-        <div id="content">
-            <p>Result: <strong>{{result}}</strong></p>
-        </div>
     </div>
+</section>
+<section>
+    <h1>Recieved answers:</h1>
+    <div id="results">
+    </div>
+    <!--<a href=# id=calculate>Show answers (not really needed since AJAX calls are made periodically)</a>-->
 </section>
 </body>
 </html>
