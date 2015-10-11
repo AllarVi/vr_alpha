@@ -4,6 +4,7 @@ wildcard="?"
 
 def md5_crack(hexhash,template):
   # first block recursively instantiates template
+  # print("/vra_md5_crack: Template to try: " + template)
   i=0
   found=False
   while i<len(template):
@@ -26,7 +27,7 @@ def md5_crack(hexhash,template):
     m=hashlib.md5()
     m.update(template)
     hash=m.hexdigest()
-    #print("template: "+template+" hash: "+hash)
+    # print("template: "+template+" hash: "+hash)
     if hash==hexhash:
       return template # cracked!
   # template contains wildcards

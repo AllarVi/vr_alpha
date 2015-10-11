@@ -4,7 +4,7 @@ import urllib2
 from flask import request
 import vra_http_request_helper
 
-def send_checkmd5(workerData, md5):
+def send_checkmd5(workerData, md5, ranges):
 
     # Request sender data
     my_host = str(request.host)
@@ -19,7 +19,7 @@ def send_checkmd5(workerData, md5):
                         "port":my_port,
                         "id":workerId,
                         "md5":md5ToCrack,
-                        "ranges":"hereWillBeRanges",
+                        "ranges":ranges,
                         "wildcard":"hereWillBeWildcard",
                         "symbolrange":"hereWillBeSymbolRange"
                         })
@@ -33,4 +33,3 @@ def send_checkmd5(workerData, md5):
         print "Socket timeout error as expected."
     except urllib2.URLError as e:
         print "URLError: " + str(e)
-    pass

@@ -23,5 +23,5 @@ print("get_ranges(10,20): " + str(vra_range_generator.get_ranges(3,7,"_")))
 print(str(time.localtime()))
 i = 0
 #while i < 2:
-vra_md5.md5_crack("f1bdb130b442c9bc665bcfdb36caba20","???")
-print(str(time.localtime()))
+# vra_md5.md5_crack("f1bdb130b442c9bc665bcfdb36caba20","???")
+# print(str(time.localtime()))

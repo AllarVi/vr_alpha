@@ -4,6 +4,7 @@ import getopt
 import sys
 
 from flask import Flask, request, render_template, jsonify
+from md5 import vra_range_generator
 
 import vra_checkmd5
 from md5.vra_md5 import md5_crack
@@ -44,7 +45,9 @@ def resourcereply():
 
     print('/resourcereply: My worker has ' + workerData['resource'] + ' resources')
     if (workerData['resource'] == str(100)):
-        vra_resourcereply.send_checkmd5(workerData, md5)
+        range_index = 1
+        ranges = vra_range_generator.get_range(range_index, '?')
+        vra_resourcereply.send_checkmd5(workerData, md5, ranges)
     else:
         print('/resourcereply: My worker is currently busy')
 
@@ -72,17 +75,20 @@ def checkmd5():
 
     # tocrack="68e1c85222192b83c04c0bae564b493d" # hash of koer
     print('md5 cracker starting...')
-    tocrack= str(masterData['md5'])
-    res=md5_crack(tocrack,"???")
-    if res:
-        print("cracking "+tocrack+" gave "+res)
-    else:
-        print("failed to crack "+tocrack)
+    tocrack = str(masterData['md5'])
+
+    ranges = masterData['ranges']
+    print("/checkmd5: templates to try: " + str(ranges))
+
+    for range in ranges:
+        result = md5_crack(tocrack, str(range))
+        if result:
+            print("cracking " + tocrack + " gave " + result)
+            vra_checkmd5.send_answermd5(masterData, result)
+        else:
+            print("failed to crack " + tocrack)
 
     is_busy = False
-
-    vra_checkmd5.send_answermd5(masterData, res)
-    print("Result: " + str(res))
 
     return 'success'
 
