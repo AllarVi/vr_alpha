@@ -3,8 +3,6 @@ __author__ = 'Mart'
 START_CHAR_ASCII_CODE = 32
 END_CHAR_ASCII_CODE = 126
 
-#TODO: ATM it returns ranges where there are wildcards also included
-# (etc: wildcard = _ and it returns a_b___ though pos1 is not a wildcard
 
 def get_range(index, wildcard):
     """Returns range according to int index and wildcard. Ranges are """
