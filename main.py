@@ -5,6 +5,7 @@ import getopt
 import sys
 import uuid
 import urllib2
+import logging
 
 from flask import Flask, request, render_template, jsonify
 
