@@ -11,6 +11,7 @@ from md5.vra_md5 import md5_crack
 import vra_resource
 import vra_resourcereply
 import vra_index
+import vra_query
 
 app = Flask(__name__)
 
@@ -20,15 +21,24 @@ md5 = ''
 
 recievedAnswers = []
 
+queries = []
+
 is_busy = False
 
 @app.route('/index', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
         if request.form['submit'] == 'sendResourceRequests':
+            """Mardi kood"""
+            global queries
+            query = vra_query.Query(request.form['md5'], "?")
+            queries.append(vra_index.md5_crack_request_handler(query))
+            #queries = vra_index.md5_crack_request_handler(queries)
+            """
             global md5
             md5 = request.form['md5']
             vra_index.md5_crack_request_handler(md5)
+            """
 
             return render_template('form_submit.html')
     if request.method == 'GET':
@@ -44,6 +54,11 @@ def resourcereply():
     #TODO fix / make pretty
     potentialWorkers[workerData['id']] = workerData
 
+    """ Mardi kood siin, allpool muutmata kujul vana kood, kui midagi pekki peaks minema """
+
+
+
+    """
     print('/resourcereply: My worker has ' + workerData['resource'] + ' resources')
     if (workerData['resource'] == str(100)):
         range_index = 1
@@ -52,7 +67,7 @@ def resourcereply():
         vra_resourcereply.send_checkmd5(workerData, md5, ranges)
     else:
         print('/resourcereply: My worker is currently busy')
-
+    """
     return 'success'
 
 

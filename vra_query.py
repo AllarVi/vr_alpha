@@ -5,6 +5,7 @@ import uuid
 
 class Query:
     last_range_index = 0
+    waiting_requestreply = []
     pending_ranges = []
 
     def __init__(self, md5, wildcard):
