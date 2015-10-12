@@ -41,11 +41,13 @@ def resourcereply():
     workerData = json.loads(str(request.get_data()))
 
     # Here we will save workers for potential future use, currently not yet implemented
+    #TODO fix / make pretty
     potentialWorkers[workerData['id']] = workerData
 
     print('/resourcereply: My worker has ' + workerData['resource'] + ' resources')
     if (workerData['resource'] == str(100)):
         range_index = 1
+        #TODO replace hardcoded wildcard
         ranges = vra_range_generator.get_range(range_index, '?')
         vra_resourcereply.send_checkmd5(workerData, md5, ranges)
     else:

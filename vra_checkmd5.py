@@ -14,7 +14,8 @@ def send_answermd5(masterData, res):
 
     requestId = masterData['id']
     md5 = masterData['md5']
-    result = 'mis sai (leidsin stringi: 0, ei leidnud stringi: 1, ei jõudnud rehkendada: 2)'
+    #result = 'mis sai (leidsin stringi: 0, ei leidnud stringi: 1, ei jõudnud rehkendada: 2)'
+    result = masterData['result']
     resultstring = res
 
     jdata = json.dumps({"ip":my_ip,
