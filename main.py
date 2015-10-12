@@ -21,7 +21,9 @@ md5 = ''
 
 recievedAnswers = []
 
-queries = []
+queries = {}
+id_hashmap = {}
+
 
 is_busy = False
 
@@ -31,12 +33,13 @@ def index():
         if request.form['submit'] == 'Crack_me':
             """Mardi kood"""
             global queries
-
             # Get submitted wildcard or '?' if no wildcard was submitted
             wildcard = vra_index.get_wildcard(request)
-
             query = vra_query.Query(request.form['md5'], wildcard)
-            queries.append(vra_index.md5_crack_request_handler(query))
+            query = vra_index.md5_crack_request_handler(query)
+            for request_id in query.waiting_requestreply:
+                id_hashmap[request_id] = query.id
+            queries[query.id] = query
             #queries = vra_index.md5_crack_request_handler(queries)
             """
             global md5
@@ -48,35 +51,27 @@ def index():
     if request.method == 'GET':
         return render_template('form_submit.html')
 
+
 @app.route("/resourcereply", methods=['POST'])
 def resourcereply():
-    global potentialWorkers
-
-    workerData = json.loads(str(request.get_data()))
-
-    # Here we will save workers for potential future use, currently not yet implemented
-    #TODO fix / make pretty
-    potentialWorkers[workerData['id']] = workerData
-
-    """ Mardi kood siin, allpool muutmata kujul vana kood, kui midagi pekki peaks minema """
-
-
-
-    """
-    print('/resourcereply: My worker has ' + workerData['resource'] + ' resources')
-    if (workerData['resource'] == str(100)):
-        range_index = 1
-        #TODO replace hardcoded wildcard
-        ranges = vra_range_generator.get_range(range_index, '?')
-        vra_resourcereply.send_checkmd5(workerData, md5, ranges)
-    else:
-        print('/resourcereply: My worker is currently busy')
-    """
-    return 'success'
+    """Gets resourcereply and sends out /checkmd5 to node."""
+    # testcurl: curl --request POST http://localhost:5000/resourcereply --data '{"ip":"lokaalhost","port":"666","id":"rammmer","resource":"100"}'
+    jdata = json.loads(str(request.get_data()))
+    sendip = jdata['ip']
+    sendport = jdata['port']
+    request_id = jdata['id']
+    resource = jdata['resource']
+    global queries
+    global id_hashmap
+    queries[id_hashmap[request_id]] =\
+        vra_resourcereply.send_checkmd5(queries[id_hashmap[request_id]], request_id, sendip, sendport, resource)
+    print("Query: "+ str(queries[id_hashmap[request_id]]))
+    return 0
 
 
 @app.route('/resource', methods=['GET'])
 def resource():
+    """Replies to resource request"""
     print('/resource AT Client reached...')
     # Read values from request. Supports both GET and POST, whichever is sent.
     sendip = request.values.get('sendip')

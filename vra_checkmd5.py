@@ -3,12 +3,22 @@ import json
 import socket
 import urllib2
 import vra_http_request_helper
+from md5 import vra_range_generator
+import time
 
 __author__ = 'allar'
 
 from flask import request
 
+
+
+
+
+
+
+
 def send_answermd5(masterData, res):
+    print("Reached checkmd5")
     my_ip = vra_http_request_helper.get_my_ip()
     my_port = vra_http_request_helper.get_my_port()
 
