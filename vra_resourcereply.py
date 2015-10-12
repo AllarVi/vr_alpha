@@ -3,33 +3,31 @@ import socket
 import urllib2
 from flask import request
 import vra_http_request_helper
+from md5 import vra_range_generator
+import time
 
-def send_checkmd5(workerData, md5, ranges):
+def send_checkmd5(query, request_id, sendip, sendport, resource):
+    if resource is not 0:
+        ranges = vra_range_generator.get_range(query.last_range_index, query.wildcard)
+        query.last_range_index += 1
+        print("Range: " + str(ranges))
+        pending_range = {}
+        pending_range['id'] = request_id
+        pending_range['ranges'] = str(ranges)
+        pending_range['timestamp'] = time.time()
+        query.pending_ranges[request_id] = pending_range
 
-    # Request sender data
-    my_host = str(request.host)
-    my_host_separator_index = my_host.index(':')
-    my_ip = vra_http_request_helper.get_my_ip()
-    my_port = vra_http_request_helper.get_my_port()
-    # Worker data
-    workerId = str(workerData['id'])
-    md5ToCrack = str(md5)
+        my_ip = vra_http_request_helper.get_my_ip()
+        my_port = vra_http_request_helper.get_my_port()
 
-    jdata = json.dumps({"ip":my_ip,
-                        "port":my_port,
-                        "id":workerId,
-                        "md5":md5ToCrack,
-                        "ranges":ranges,
-                        "wildcard":"hereWillBeWildcard",
-                        "symbolrange":"hereWillBeSymbolRange"
+        jdata = json.dumps({"ip": my_ip,
+                        "port": my_port,
+                        "id": request_id,
+                        "md5": query.md5,
+                        "ranges": ranges,
+                        "wildcard": query.wildcard
                         })
+        vra_http_request_helper.send_post_request(sendip, sendport, jdata, "/checkmd5")
+        print("Query: " + str(query))
 
-    # Send md5 to worker
-    try:
-        workerIp = str(workerData['ip'])
-        workerPort = str(workerData['port'])
-        urllib2.urlopen("http://" + workerIp + ":" + workerPort + "/checkmd5", jdata, timeout=0.0000001)
-    except socket.error:
-        print "Socket timeout error as expected."
-    except urllib2.URLError as e:
-        print "URLError: " + str(e)
+    return query
