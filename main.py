@@ -28,10 +28,14 @@ is_busy = False
 @app.route('/index', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        if request.form['submit'] == 'sendResourceRequests':
+        if request.form['submit'] == 'Crack_me':
             """Mardi kood"""
             global queries
-            query = vra_query.Query(request.form['md5'], "?")
+
+            # Get submitted wildcard or '?' if no wildcard was submitted
+            wildcard = vra_index.get_wildcard(request)
+
+            query = vra_query.Query(request.form['md5'], wildcard)
             queries.append(vra_index.md5_crack_request_handler(query))
             #queries = vra_index.md5_crack_request_handler(queries)
             """

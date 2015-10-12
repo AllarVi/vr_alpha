@@ -21,3 +21,10 @@ def md5_crack_request_handler(query):
         my_params = '/resource?sendip=' + my_ip + '&sendport=' + my_port + '&ttl=10&id=' + uid
         vra_http_request_helper.send_get_request(host_ip, host_port, my_params)
     return query
+
+def get_wildcard(request):
+    wildcard = request.form['wildcard']
+    if not wildcard:
+        wildcard = "?"
+
+    return wildcard
