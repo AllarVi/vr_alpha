@@ -5,15 +5,15 @@ $(function() {
     });
 });
 
-setInterval(                                  //Periodically
-    function()
-      {
-         $.getJSON(                           // Get some values from the server
-            $SCRIPT_ROOT + '/answermd5',      // At this URL
-            {},                               // With no extra parameters
-            fetchAnswers);
-      },
-    2000);                                    // And do it every 2000ms
+//setInterval(                                  //Periodically
+//    function()
+//      {
+//         $.getJSON(                           // Get some values from the server
+//            $SCRIPT_ROOT + '/answermd5',      // At this URL
+//            {},                               // With no extra parameters
+//            fetchAnswers);
+//      },
+//    2000);                                    // And do it every 2000ms
 
 function fetchAnswers(data) {
     // Removes all previous answers

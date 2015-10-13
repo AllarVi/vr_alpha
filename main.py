@@ -154,7 +154,8 @@ def readcmdhost(argv):
 
 if __name__ == '__main__':
     my_port = readcmdport(sys.argv[1:])
-    my_host = readcmdhost(sys.argv[1:])
+    my_host = vra_http_request_helper.get_ip_address('wlan0')
+
     app.debug = True
     app.run(threaded=True,
             host=my_host,
