@@ -26,3 +26,16 @@ i = 0
 # vra_md5.md5_crack("f1bdb130b442c9bc665bcfdb36caba20","???")
 # print(str(time.localtime()))
 #while i < 2:
+
+print("Testing break")
+
+def test():
+    i = 0
+    while i < 10:
+        if i is 4:
+            break
+        print("i=" + str(i))
+        i += 1
+    print("Reached the end of the test")
+
+test()

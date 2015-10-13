@@ -1,7 +1,7 @@
 __author__ = 'Mart'
 
-START_CHAR_ASCII_CODE = 65
-END_CHAR_ASCII_CODE = 68
+START_CHAR_ASCII_CODE = 32
+END_CHAR_ASCII_CODE = 126
 
 
 def get_range(index, wildcard):

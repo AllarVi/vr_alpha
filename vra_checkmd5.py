@@ -1,43 +1,39 @@
 # coding=utf-8
 import json
-import socket
-import urllib2
 import vra_http_request_helper
-from md5 import vra_range_generator
-import time
+from md5 import vra_md5
 
 __author__ = 'allar'
 
-from flask import request
 
+def send_answermd5(masterData):
+    sendip = masterData['ip']
+    sendport = masterData['port']
+    request_id = masterData['id']
+    md5_hash = masterData['md5']
+    ranges = masterData['ranges']
 
-
-
-
-
-
-
-def send_answermd5(masterData, res):
-    print("Reached checkmd5")
     my_ip = vra_http_request_helper.get_my_ip()
     my_port = vra_http_request_helper.get_my_port()
 
-    requestId = masterData['id']
-    md5 = masterData['md5']
-    #result = 'mis sai (leidsin stringi: 0, ei leidnud stringi: 1, ei jõudnud rehkendada: 2)'
-    result = masterData['result']
-    resultstring = res
-
+    print("/checkmd5: templates to try: " + str(ranges))
+    result = 0
+    result_string = ''
+    for range in ranges:
+        result_string = vra_md5.md5_crack(str(md5_hash), str(range))
+        if result_string:
+            result = 1
+            print("cracking " + str(md5_hash) + " gave " + result_string)
+            break
+        else:
+            print("failed to crack " + str(md5_hash))
     jdata = json.dumps({"ip":my_ip,
                         "port":my_port,
-                        "id":requestId,
-                        "md5":md5,
+                        "id":request_id,
+                        "md5":md5_hash,
                         "result":result,
-                        "resultstring":resultstring
+                        "resultstring":result_string
                         })
-
-    sendip = masterData['ip']
-    sendport = masterData['port']
-
-    print('Sending /answermd5 back to master')
     vra_http_request_helper.send_post_request(sendip, sendport, jdata, "/answermd5")
+    print("Sent /answermd5")
+    return 0

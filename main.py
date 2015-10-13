@@ -12,6 +12,7 @@ import vra_resource
 import vra_resourcereply
 import vra_index
 import vra_query
+import vra_http_request_helper
 
 app = Flask(__name__)
 
@@ -84,36 +85,22 @@ def resource():
 
 @app.route('/checkmd5', methods=['POST'])
 def checkmd5():
+    print("reached /checkmd5")
     global is_busy
     is_busy = True
 
     masterData = json.loads(str(request.get_data()))
-
-    # tocrack="68e1c85222192b83c04c0bae564b493d" # hash of koer
-    print('md5 cracker starting...')
-    tocrack = str(masterData['md5'])
-
-    ranges = masterData['ranges']
-    print("/checkmd5: templates to try: " + str(ranges))
-
-    for range in ranges:
-        result = md5_crack(tocrack, str(range))
-        if result:
-            print("cracking " + tocrack + " gave " + result)
-            vra_checkmd5.send_answermd5(masterData, result)
-        else:
-            print("failed to crack " + tocrack)
-
+    a = vra_checkmd5.send_answermd5(masterData)
+    print("Reached the end of /checkmd5")
     is_busy = False
-
-    return 'success'
+    return 0
 
 
 @app.route('/answermd5', methods=['GET', 'POST'])
 def answermd5():
     print('/answermd5 reached...')
     if request.method == 'POST':
-        global recievedAnswers
+        #global recievedAnswers
 
         answerData = json.loads(str(request.get_data()))
         answer = str(answerData['resultstring'])
