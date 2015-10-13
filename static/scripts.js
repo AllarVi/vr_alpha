@@ -22,6 +22,9 @@ function fetchAnswers(data) {
     // Refreshes all answers
     for (var i = 0; i < data.resultstring.length; i++) {
         console.log(data.resultstring[i])
-        $('#results').append('<p class="result">' + data.resultstring[i] + '</p>');
+        $('#results').append('<p class="result">' +
+         data.resultstring[i][0] +
+          ' = ' + data.resultstring[i][1] +
+           '</p>');
     }
 }

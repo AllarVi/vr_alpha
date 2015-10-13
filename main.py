@@ -32,7 +32,7 @@ is_busy = False
 @app.route('/index', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
-        if request.form['submit'] == 'Crack_me':
+        if request.form['submit'] == 'crack_me':
             """Mardi kood"""
             global queries
             # Get submitted wildcard or '?' if no wildcard was submitted
@@ -117,8 +117,15 @@ def answermd5():
 
     if request.method == 'GET':
         global queries
+        global recievedAnswers
+
+        # Clear previous answers
+        recievedAnswers = []
+
         for key, elem in queries.items():
-            print("MD5: " + str(queries[key].md5) + " | Result: " + str(queries[key].result))
+            # print("MD5: " + str(queries[key].md5) + " | Result: " + str(queries[key].result))
+            recievedAnswers.append((str(queries[key].md5), str(queries[key].result)))
+
         return jsonify(resultstring=recievedAnswers)
 
 

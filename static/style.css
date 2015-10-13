@@ -239,6 +239,10 @@ body {
  * Affix and center
  */
 
+.input-field {
+  color: #333;
+}
+
 @media (min-width: 768px) {
   /* Pull out the header and footer */
   .masthead {
