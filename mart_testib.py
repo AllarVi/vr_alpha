@@ -39,3 +39,12 @@ def test():
     print("Reached the end of the test")
 
 test()
+
+import vra_query
+
+queries = {}
+
+def testin_taas():
+    global queries
+
+

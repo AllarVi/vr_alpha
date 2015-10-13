@@ -17,16 +17,17 @@ def send_answermd5(masterData):
     my_port = vra_http_request_helper.get_my_port()
 
     print("/checkmd5: templates to try: " + str(ranges))
-    result = 0
+    result = 1
     result_string = ''
     for range in ranges:
         result_string = vra_md5.md5_crack(str(md5_hash), str(range))
         if result_string:
-            result = 1
+            result = 0
             print("cracking " + str(md5_hash) + " gave " + result_string)
             break
         else:
             print("failed to crack " + str(md5_hash))
+    print("Giving back: " + str(result_string))
     jdata = json.dumps({"ip":my_ip,
                         "port":my_port,
                         "id":request_id,

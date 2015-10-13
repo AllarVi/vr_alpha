@@ -13,6 +13,7 @@ import vra_resourcereply
 import vra_index
 import vra_query
 import vra_http_request_helper
+import vra_answermd5
 
 app = Flask(__name__)
 
@@ -103,13 +104,21 @@ def answermd5():
         #global recievedAnswers
 
         answerData = json.loads(str(request.get_data()))
-        answer = str(answerData['resultstring'])
-        worker_ip_and_port = str(answerData['ip']) + ":" + str(answerData['port'])
-
-        recievedAnswers.append((answer, worker_ip_and_port))
-        print ('Answer:' + answer)
+        sendip = answerData['ip']
+        sendport = answerData['port']
+        request_id = answerData['id']
+        result = answerData['result']
+        result_string = answerData['resultstring']
+        global queries
+        global id_hashmap
+        queries[id_hashmap[request_id]] =\
+        vra_answermd5.send_new_checkmd5(queries[id_hashmap[request_id]], request_id, sendip, sendport, result, result_string)
+        return 0
 
     if request.method == 'GET':
+        global queries
+        for key, elem in queries.items():
+            print("MD5: " + str(queries[key].md5) + " | Result: " + str(queries[key].result))
         return jsonify(resultstring=recievedAnswers)
 
 
