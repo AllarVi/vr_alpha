@@ -131,7 +131,7 @@ def answermd5():
 
 def readcmdport(argv):
     try:
-        opts, args = getopt.getopt(argv,"p:",["-port"])
+        opts, args = getopt.getopt(argv,"p:h:",["-port", "-host"])
     except getopt.GetoptError:
         return int(5000)
     for opt, arg in opts:
@@ -141,9 +141,21 @@ def readcmdport(argv):
                     return int(arg)
     return int(5000)
 
+def readcmdhost(argv):
+    try:
+        opts, args = getopt.getopt(argv,"p:h:",["-port", "-host"])
+    except getopt.GetoptError:
+        return '127.0.0.1'
+    for opt, arg in opts:
+        if opt == '-h':
+            return arg
+    return '127.0.0.1'
+
 
 if __name__ == '__main__':
     my_port = readcmdport(sys.argv[1:])
+    my_host = readcmdhost(sys.argv[1:])
     app.debug = True
     app.run(threaded=True,
+            host=my_host,
             port=my_port)
