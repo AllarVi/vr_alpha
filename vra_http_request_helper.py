@@ -1,10 +1,8 @@
-__author__ = 'Mart'
-
 import urllib2
 import socket
 from flask import request
 
-
+__author__ = 'Mart'
 
 
 def send_get_request(sendip, sendport, my_params):
@@ -16,6 +14,7 @@ def send_get_request(sendip, sendport, my_params):
         print "Socket timeout error as expected."
     except urllib2.URLError as e:
         print "URLError: " + str(e)
+
 
 def send_post_request(sendip, sendport, jdata, post_action):
     try:
@@ -32,6 +31,7 @@ def get_my_ip():
     my_host = str(request.host)
     my_host_separator_index = my_host.index(':')
     return my_host[:my_host_separator_index]
+
 
 def get_my_port():
     my_host = str(request.host)

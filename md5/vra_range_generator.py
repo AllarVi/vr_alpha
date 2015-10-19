@@ -12,7 +12,7 @@ def get_range(index, wildcard):
     if START_CHAR_ASCII_CODE <= wildcard_ascii_index <= END_CHAR_ASCII_CODE:
         number_of_chars -= 1
 
-    # ? and ?? and ???
+    # ? and ??
     if index is 0:
         range1 = wildcard_string
         range2 = wildcard_string + wildcard_string
@@ -27,6 +27,10 @@ def get_range(index, wildcard):
         return [get_char(START_CHAR_ASCII_CODE + int(operator / number_of_chars), wildcard_ascii_index)
                + get_char(START_CHAR_ASCII_CODE + operator % number_of_chars ,wildcard_ascii_index) +
                 wildcard_string + wildcard_string]
+    else:
+        return []
+
+    """
     # aaa??, aab??, aac??, ...
     elif index <= (number_of_chars**3 + (number_of_chars**2 + number_of_chars)):
         indexer = 0
@@ -47,6 +51,7 @@ def get_range(index, wildcard):
             get_char(START_CHAR_ASCII_CODE + int(operator / number_of_chars) % number_of_chars, wildcard_ascii_index) +
             get_char(START_CHAR_ASCII_CODE + operator % (number_of_chars), wildcard_ascii_index) +
             wildcard_string * (2 + indexer)]
+    """
 
 
 def get_ranges(startindex, lastindex, wildcard):

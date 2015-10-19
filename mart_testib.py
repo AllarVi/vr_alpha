@@ -1,8 +1,11 @@
-__author__ = 'Mart'
-
 from md5 import vra_range_generator
 from md5 import vra_md5
 import time
+import vra_http_request_helper
+
+__author__ = 'Mart'
+
+
 i = 65
 while i <= 70:
     print("Char " + str(i) + " = " + chr(i))
@@ -17,6 +20,7 @@ a = ["a"]
 b = ["b"]
 c = a + b
 print(str(c))
+a = vra_http_request_helper.get_my_ip()
 
 print("get_ranges(10,20): " + str(vra_range_generator.get_ranges(3,7,"_")))
 
@@ -43,6 +47,9 @@ test()
 import vra_query
 
 queries = {}
+
+
+print("Socket info: " + str(a))
 
 def testin_taas():
     global queries
