@@ -40,7 +40,6 @@ def index():
             for query_id in queries:
                 print("queries[query_id].md5: " + str(queries[query_id].md5) + " request.form['md5']: " + str(request.form['md5']))
                 if queries[query_id].md5 == request.form['md5']:
-                    print("RETURNED MOTHAFUCKA")
                     return render_template('form_submit.html')
             query = vra_query.Query(request.form['md5'], wildcard)
             query = vra_index.md5_crack_request_handler(query)
