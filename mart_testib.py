@@ -2,10 +2,11 @@ from md5 import vra_range_generator
 from md5 import vra_md5
 import time
 import vra_http_request_helper
+import vra_resource
 
 __author__ = 'Mart'
 
-
+"""
 i = 65
 while i <= 70:
     print("Char " + str(i) + " = " + chr(i))
@@ -53,5 +54,8 @@ print("Socket info: " + str(a))
 
 def testin_taas():
     global queries
+"""
 
+print(vra_resource.hosts_from_web("http://maatriks.eu/web_machines.txt"))
 
+vra_resource.resource_handler(0, 0, "3", "a", ["11.22.33.44_14", "111.222.333.424_23456"], False)

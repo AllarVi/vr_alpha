@@ -3,6 +3,7 @@ __author__ = 'Mart'
 import json
 import vra_http_request_helper
 import vra_io
+import urllib2
 
 def resource_handler(sendip, sendport, ttl, id, noask, is_busy):
     # Check if I am busy and respond accordingly
@@ -37,8 +38,10 @@ def resource_handler(sendip, sendport, ttl, id, noask, is_busy):
 
         # Check noask list vs known hosts list and generate list of new unique hosts to forward request to
         known_hosts_from_file = vra_io.load_hosts()
-        print("Known hosts: " + str(known_hosts_from_file))
-        will_ask = [x for x in known_hosts_from_file if x not in noask]
+        known_hosts_from_web = hosts_from_web("http://maatriks.eu/web_machines.txt")
+
+        will_ask = [x for x in known_hosts_from_file if x not in noask] # Known hosts not in noask list
+        will_ask += [x for x in known_hosts_from_web if x not in noask and x not in will_ask] # Web hosts not in noask list and will_ask list
 
         # Set up request url parameters
         my_params = "/resource?sendip=" + str(sendip) + "&sendport=" + str(sendport) + "&ttl=" + str(ttl) + "&id=" + str(id)
@@ -69,3 +72,8 @@ def noask_string_to_list(noask):
             else:
                 print("Host port must be an integer, instead was: " + str(type(host_port)))
     return noask_list
+
+
+def hosts_from_web(url):
+    response = urllib2.urlopen(url)
+    return json.loads(response.read())
