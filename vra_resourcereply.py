@@ -1,21 +1,34 @@
 import json
-import socket
-import urllib2
-from flask import request
 import vra_http_request_helper
 from md5 import vra_range_generator
 import time
 
+
 def send_checkmd5(query, request_id, sendip, sendport, resource):
     if resource is not 0:
         ranges = vra_range_generator.get_range(query.last_range_index, query.wildcard)
+        # If generated range is empty, then do not send out the request (out of ranges, this hash is not solved).
+        if not ranges:
+            # Check if there are any ranges not replied to
+            if query.pending_ranges.len > 0:
+                max_time = -1
+                max_id = ""
+                current_time = time.time()
 
-        # If generated range is empty, then do not send out the request (out of ranges, this problem is not solved).
-        if range is []:
-            return query
+                # Find pending range with largest passed time and send it out.
+                for range_id in query.pending_ranges:
+                    if current_time - query.pending_ranges[range_id].timestamp > max_time:
+                        max_time = current_time - query.pending_ranges[range_id].timestamp
+                        max_id = range_id
+
+                # By keeping the original request id, we can accept answers from both the original and new requests.
+                request_id = max_id
+                ranges = query.pending_ranges[max_id]
+                query.last_range_index -= 1 # So it is not affected, see couple of rows below.
+            else:
+                return query
 
         query.last_range_index += 1
-        print("Range: " + str(ranges))
         pending_range = {}
         pending_range['id'] = request_id
         pending_range['ranges'] = str(ranges)

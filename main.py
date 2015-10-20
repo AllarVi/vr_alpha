@@ -151,6 +151,7 @@ def readcmdhost(argv):
 
 
 if __name__ == '__main__':
+    #sys.tracebacklimit = 0
     my_port = readcmdport(sys.argv[1:])
     my_host = readcmdhost(sys.argv[1:])
     app.debug = True
