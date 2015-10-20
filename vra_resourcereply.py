@@ -9,6 +9,11 @@ import time
 def send_checkmd5(query, request_id, sendip, sendport, resource):
     if resource is not 0:
         ranges = vra_range_generator.get_range(query.last_range_index, query.wildcard)
+
+        # If generated range is empty, then do not send out the request (out of ranges, this problem is not solved).
+        if range is []:
+            return query
+
         query.last_range_index += 1
         print("Range: " + str(ranges))
         pending_range = {}
