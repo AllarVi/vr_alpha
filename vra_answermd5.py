@@ -17,7 +17,9 @@ def send_new_checkmd5(query, request_id, sendip, sendport, result, result_string
     # If answer is found, prepare query.
     if int(result) == 0:
         query.result_found = 1
-        query.result = result_string
+        # To avoid overwriting.
+        if query.result is "":
+            query.result = result_string
         query.pending_ranges = {}
         query.waiting_requestreply = []
         return query

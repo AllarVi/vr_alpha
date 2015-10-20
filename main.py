@@ -33,21 +33,19 @@ is_busy = False
 def index():
     if request.method == 'POST':
         if request.form['submit'] == 'crack_me':
-            """Mardi kood"""
             global queries
             # Get submitted wildcard or '?' if no wildcard was submitted
             wildcard = vra_index.get_wildcard(request)
+            # If we already have an answer, do not compute again.
+            for query in queries:
+                if query.md5 is request.form['md5']:
+                    return render_template('form_submit.html')
             query = vra_query.Query(request.form['md5'], wildcard)
             query = vra_index.md5_crack_request_handler(query)
             for request_id in query.waiting_requestreply:
                 id_hashmap[request_id] = query.id
             queries[query.id] = query
             #queries = vra_index.md5_crack_request_handler(queries)
-            """
-            global md5
-            md5 = request.form['md5']
-            vra_index.md5_crack_request_handler(md5)
-            """
 
             return render_template('form_submit.html')
     if request.method == 'GET':
