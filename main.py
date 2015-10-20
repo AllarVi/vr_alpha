@@ -37,8 +37,10 @@ def index():
             # Get submitted wildcard or '?' if no wildcard was submitted
             wildcard = vra_index.get_wildcard(request)
             # If we already have an answer, do not compute again.
-            for query in queries:
-                if query.md5 is request.form['md5']:
+            for query_id in queries:
+                print("queries[query_id].md5: " + str(queries[query_id].md5) + " request.form['md5']: " + str(request.form['md5']))
+                if queries[query_id].md5 == request.form['md5']:
+                    print("RETURNED MOTHAFUCKA")
                     return render_template('form_submit.html')
             query = vra_query.Query(request.form['md5'], wildcard)
             query = vra_index.md5_crack_request_handler(query)
@@ -98,6 +100,7 @@ def checkmd5():
 @app.route('/answermd5', methods=['GET', 'POST'])
 def answermd5():
     print('/answermd5 reached...')
+    global queries
     if request.method == 'POST':
         #global recievedAnswers
 
@@ -107,14 +110,12 @@ def answermd5():
         request_id = answerData['id']
         result = answerData['result']
         result_string = answerData['resultstring']
-        global queries
         global id_hashmap
         queries[id_hashmap[request_id]] =\
         vra_answermd5.send_new_checkmd5(queries[id_hashmap[request_id]], request_id, sendip, sendport, result, result_string)
         return 0
 
     if request.method == 'GET':
-        global queries
         global recievedAnswers
 
         # Clear previous answers
