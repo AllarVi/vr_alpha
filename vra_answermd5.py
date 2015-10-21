@@ -40,6 +40,7 @@ def send_new_checkmd5(query, request_id, sendip, sendport, result, result_string
                         "ranges": new_ranges,
                         "wildcard": query.wildcard
                         })
+        #vra_http_request_helper.send_post_request(sendip, sendport, jdata, "/check5")
         t = vra_http_request_helper.ThreadedPost(sendip, sendport, jdata, "/checkmd5")
         t.setDaemon(True)
         t.start()
