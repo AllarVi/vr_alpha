@@ -45,6 +45,7 @@ def send_new_checkmd5(query, request_id, sendip, sendport, result, result_string
         t.setDaemon(True)
         t.start()
     elif int(result) == 2:
-        # TODO: reassign ranges
+        # This is already taken care of. If program does not respond, it's ranges are reassigned.
         pass
+
     return query
