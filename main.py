@@ -1,33 +1,27 @@
-# coding=utf-8
 import json
 import getopt
 import sys
 
 from flask import Flask, request, render_template, jsonify
-from md5 import vra_range_generator
 
 import vra_checkmd5
-from md5.vra_md5 import md5_crack
 import vra_resource
 import vra_resourcereply
 import vra_index
 import vra_query
-import vra_http_request_helper
 import vra_answermd5
 
 app = Flask(__name__)
 
-potentialWorkers = {}
-
-md5 = ''
-
-recievedAnswers = []
-
+# Dictionary of queries.
 queries = {}
+
+# Holds pairs of query id's and request id's
 id_hashmap = {}
 
-
+# Flag if program is currently busy or not.
 is_busy = False
+
 
 @app.route('/index', methods=['GET', 'POST'])
 def index():
@@ -56,7 +50,6 @@ def index():
 @app.route("/resourcereply", methods=['POST'])
 def resourcereply():
     """Gets resourcereply and sends out /checkmd5 to node."""
-    # testcurl: curl --request POST http://localhost:5000/resourcereply --data '{"ip":"lokaalhost","port":"666","id":"rammmer","resource":"100"}'
     jdata = json.loads(str(request.get_data()))
     sendip = jdata['ip']
     sendport = jdata['port']
@@ -66,7 +59,6 @@ def resourcereply():
     global id_hashmap
     queries[id_hashmap[request_id]] =\
         vra_resourcereply.send_checkmd5(queries[id_hashmap[request_id]], request_id, sendip, sendport, resource)
-    print("Query: "+ str(queries[id_hashmap[request_id]]))
     return 0
 
 
@@ -79,16 +71,20 @@ def resource():
     sendport = request.values.get('sendport')
     ttl = request.values.get('ttl')
     id = request.values.get('id')
+    if id is None:
+        id = "no_id_provided"
     noask = request.values.getlist('noask')
+    if noask is None:
+        noask = []
 
     return vra_resource.resource_handler(sendip, sendport, ttl, id, noask, is_busy)
+
 
 @app.route('/checkmd5', methods=['POST'])
 def checkmd5():
     print("reached /checkmd5")
     global is_busy
     is_busy = True
-
     masterData = json.loads(str(request.get_data()))
     a = vra_checkmd5.send_answermd5(masterData)
     print("Reached the end of /checkmd5")
@@ -100,9 +96,8 @@ def checkmd5():
 def answermd5():
     print('/answermd5 reached...')
     global queries
-    if request.method == 'POST':
-        #global recievedAnswers
 
+    if request.method == 'POST':
         answerData = json.loads(str(request.get_data()))
         sendip = answerData['ip']
         sendport = answerData['port']
@@ -115,16 +110,11 @@ def answermd5():
         return 0
 
     if request.method == 'GET':
-        global recievedAnswers
-
-        # Clear previous answers
-        recievedAnswers = []
-
+        received_answers = []
         for key, elem in queries.items():
             # print("MD5: " + str(queries[key].md5) + " | Result: " + str(queries[key].result))
-            recievedAnswers.append((str(queries[key].md5), str(queries[key].result)))
-
-        return jsonify(resultstring=recievedAnswers)
+            received_answers.append((str(queries[key].md5), str(queries[key].result)))
+        return jsonify(resultstring=received_answers)
 
 
 def readcmdport(argv):
@@ -139,6 +129,7 @@ def readcmdport(argv):
                     return int(arg)
     return int(5000)
 
+
 def readcmdhost(argv):
     try:
         opts, args = getopt.getopt(argv,"p:h:",["-port", "-host"])
@@ -151,7 +142,6 @@ def readcmdhost(argv):
 
 
 if __name__ == '__main__':
-    #sys.tracebacklimit = 0
     my_port = readcmdport(sys.argv[1:])
     my_host = readcmdhost(sys.argv[1:])
     app.debug = True

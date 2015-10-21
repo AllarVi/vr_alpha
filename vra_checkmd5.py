@@ -12,15 +12,21 @@ def send_answermd5(masterData):
     request_id = masterData['id']
     md5_hash = masterData['md5']
     ranges = masterData['ranges']
-
+    if 'symbolrange' in masterData:
+        symbolranges = masterData['symbolrange']
+    else:
+        symbolranges = [[32,126]]
+    if 'wildcard' in masterData:
+        wildcard = masterData['wildcard']
+    else:
+        wildcard = "?"
     my_ip = vra_http_request_helper.get_my_ip()
     my_port = vra_http_request_helper.get_my_port()
 
-    print("/checkmd5: templates to try: " + str(ranges))
     result = 1
     result_string = ''
     for range in ranges:
-        result_string = vra_md5.md5_crack(str(md5_hash), str(range))
+        result_string = vra_md5.md5_crack(str(md5_hash), str(range), str(wildcard), symbolranges)
         if result_string:
             result = 0
             print("cracking " + str(md5_hash) + " gave " + result_string)
@@ -28,12 +34,12 @@ def send_answermd5(masterData):
         else:
             print("failed to crack " + str(md5_hash))
     print("Giving back: " + str(result_string))
-    jdata = json.dumps({"ip":my_ip,
-                        "port":my_port,
-                        "id":request_id,
-                        "md5":md5_hash,
-                        "result":result,
-                        "resultstring":result_string
+    jdata = json.dumps({"ip": my_ip,
+                        "port": my_port,
+                        "id": request_id,
+                        "md5": md5_hash,
+                        "result": result,
+                        "resultstring": result_string
                         })
     vra_http_request_helper.send_post_request(sendip, sendport, jdata, "/answermd5")
     print("Sent /answermd5")

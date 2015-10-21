@@ -38,7 +38,7 @@ def resource_handler(sendip, sendport, ttl, id, noask, is_busy):
 
         # Check noask list vs known hosts list and generate list of new unique hosts to forward request to
         known_hosts_from_file = vra_io.load_hosts()
-        known_hosts_from_web = hosts_from_web("http://maatriks.eu/web_machines.txt")
+        known_hosts_from_web = vra_io.load_hosts_from_web("http://maatriks.eu/web_machines.txt")
 
         will_ask = [x for x in known_hosts_from_file if x not in noask] # Known hosts not in noask list
         will_ask += [x for x in known_hosts_from_web if x not in noask and x not in will_ask] # Web hosts not in noask list and will_ask list
@@ -72,8 +72,3 @@ def noask_string_to_list(noask):
             else:
                 print("Host port must be an integer, instead was: " + str(type(host_port)))
     return noask_list
-
-
-def hosts_from_web(url):
-    response = urllib2.urlopen(url)
-    return json.loads(response.read())
