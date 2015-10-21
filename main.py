@@ -59,7 +59,7 @@ def resourcereply():
     global id_hashmap
     queries[id_hashmap[request_id]] =\
         vra_resourcereply.send_checkmd5(queries[id_hashmap[request_id]], request_id, sendip, sendport, resource)
-    return 0
+    return "0"
 
 
 @app.route('/resource', methods=['GET'])
@@ -89,7 +89,7 @@ def checkmd5():
     a = vra_checkmd5.send_answermd5(masterData)
     print("Reached the end of /checkmd5")
     is_busy = False
-    return 0
+    return "0"
 
 
 @app.route('/answermd5', methods=['GET', 'POST'])
@@ -107,7 +107,7 @@ def answermd5():
         global id_hashmap
         queries[id_hashmap[request_id]] =\
         vra_answermd5.send_new_checkmd5(queries[id_hashmap[request_id]], request_id, sendip, sendport, result, result_string)
-        return 0
+        return "0"
 
     if request.method == 'GET':
         received_answers = []

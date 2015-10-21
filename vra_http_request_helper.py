@@ -1,6 +1,7 @@
 import urllib2
 import socket
 from flask import request
+import threading
 
 __author__ = 'Mart'
 
@@ -37,3 +38,40 @@ def get_my_port():
     my_host = str(request.host)
     my_host_separator_index = my_host.index(':')
     return my_host[my_host_separator_index + 1:]
+
+
+class ThreadedGet(threading.Thread):
+    def __init__(self, sendip, sendport, my_params):
+        threading.Thread.__init__(self)
+        self.sendip = sendip
+        self.sendport = sendport
+        self.my_params = my_params
+
+    def run(self):
+        try:
+            encodedSendIp = str(self.sendip)
+            encodedSendPort = str(self.sendport)
+            urllib2.urlopen("http://" + encodedSendIp + ":" + encodedSendPort + self.my_params)
+        except socket.error:
+            print "Socket timeout error."
+        except urllib2.URLError as e:
+            print "URLError: " + str(e)
+
+
+class ThreadedPost(threading.Thread):
+    def __init__(self, sendip, sendport, jdata, post_action):
+        threading.Thread.__init__(self)
+        self.sendip = sendip
+        self.sendport = sendport
+        self.jdata = jdata
+        self.post_action = post_action
+
+    def run(self):
+        try:
+            encodedSendIp = str(self.sendip)
+            encodedSendPort = str(self.sendport)
+            urllib2.urlopen("http://" + encodedSendIp + ":" + encodedSendPort + self.post_action, self.jdata)
+        except socket.error:
+            print "Socket timeout error."
+        except urllib2.URLError as e:
+            print "URLError: " + str(e)

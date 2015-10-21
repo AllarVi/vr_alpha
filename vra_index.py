@@ -23,7 +23,10 @@ def md5_crack_request_handler(query):
         host_ip = str(host[0])
         host_port = str(host[1])
         my_params = '/resource?sendip=' + my_ip + '&sendport=' + my_port + '&ttl=10&id=' + uid
-        vra_http_request_helper.send_get_request(host_ip, host_port, my_params)
+        t = vra_http_request_helper.ThreadedGet(host_ip, host_port, my_params)
+        t.setDaemon(True)
+        t.start()
+        #vra_http_request_helper.send_get_request(host_ip, host_port, my_params)
     return query
 
 

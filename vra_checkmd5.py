@@ -44,6 +44,9 @@ def send_answermd5(masterData):
                         "result": result,
                         "resultstring": result_string
                         })
-    vra_http_request_helper.send_post_request(sendip, sendport, jdata, "/answermd5")
+    #vra_http_request_helper.send_post_request(sendip, sendport, jdata, "/answermd5")
+    t = vra_http_request_helper.ThreadedPost(sendip, sendport, jdata, "/answermd5")
+    t.setDaemon(True)
+    t.start()
     print("Sent /answermd5")
-    return 0
+    return "0"
