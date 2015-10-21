@@ -7,11 +7,13 @@ __author__ = 'allar'
 
 
 def send_answermd5(masterData):
+    # Mandatory parameters
     sendip = masterData['ip']
     sendport = masterData['port']
     request_id = masterData['id']
     md5_hash = masterData['md5']
     ranges = masterData['ranges']
+    # Optional parameters
     if 'symbolrange' in masterData:
         symbolranges = masterData['symbolrange']
     else:
@@ -20,6 +22,7 @@ def send_answermd5(masterData):
         wildcard = masterData['wildcard']
     else:
         wildcard = "?"
+
     my_ip = vra_http_request_helper.get_my_ip()
     my_port = vra_http_request_helper.get_my_port()
 

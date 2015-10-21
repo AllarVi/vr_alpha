@@ -30,29 +30,6 @@ def get_range(index, wildcard):
     else:
         return []
 
-    """
-    # aaa??, aab??, aac??, ...
-    elif index <= (number_of_chars**3 + (number_of_chars**2 + number_of_chars)):
-        indexer = 0
-    # aaa???, aab???, aac???, aad???, ...
-    elif index <= number_of_chars**3 + (number_of_chars**3 + (number_of_chars**2 + number_of_chars)):
-        indexer = 1
-    # aaa????, aab????, aac????, aad????, ...
-    elif index <= number_of_chars**3 + (number_of_chars**3 + (number_of_chars**3 + (number_of_chars**2 + number_of_chars))):
-        indexer = 2
-    # aaa?????, aab?????, aac?????, aad?????, ...
-    elif index <= number_of_chars**3 + number_of_chars**3 + (number_of_chars**3 + (number_of_chars**3 + (number_of_chars**2 + number_of_chars))):
-        indexer = 3
-    else:
-        return []
-
-    operator = index - (indexer * number_of_chars**3 + number_of_chars**2 + number_of_chars) - 1
-    return [get_char(START_CHAR_ASCII_CODE + int(operator / number_of_chars**2) % number_of_chars, wildcard_ascii_index) +
-            get_char(START_CHAR_ASCII_CODE + int(operator / number_of_chars) % number_of_chars, wildcard_ascii_index) +
-            get_char(START_CHAR_ASCII_CODE + operator % (number_of_chars), wildcard_ascii_index) +
-            wildcard_string * (2 + indexer)]
-    """
-
 
 def get_ranges(startindex, lastindex, wildcard):
     """Returns multiple ranges in an array"""

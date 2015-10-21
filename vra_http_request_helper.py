@@ -15,6 +15,7 @@ def send_get_request(sendip, sendport, my_params):
     except urllib2.URLError as e:
         print "URLError: " + str(e)
 
+
 def send_post_request(sendip, sendport, jdata, post_action):
     try:
         encodedSendIp = str(sendip)

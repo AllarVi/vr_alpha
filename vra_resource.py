@@ -1,9 +1,9 @@
-__author__ = 'Mart'
-
 import json
 import vra_http_request_helper
 import vra_io
-import urllib2
+
+__author__ = 'Mart'
+
 
 def resource_handler(sendip, sendport, ttl, id, noask, is_busy):
     # Check if I am busy and respond accordingly

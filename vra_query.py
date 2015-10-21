@@ -1,6 +1,6 @@
-__author__ = 'Mart'
-
 import uuid
+
+__author__ = 'Mart'
 
 
 class Query:

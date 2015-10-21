@@ -1,11 +1,9 @@
-__author__ = 'mart'
-
-import vra_http_request_helper
-from md5 import vra_md5
 from md5 import vra_range_generator
 import time
 import json
 import vra_http_request_helper
+
+__author__ = 'mart'
 
 
 def send_new_checkmd5(query, request_id, sendip, sendport, result, result_string):
